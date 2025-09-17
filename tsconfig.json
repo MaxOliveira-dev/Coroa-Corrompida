@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "types": ["vite/client"]
+  },
+  "include": [
+    "index.tsx", 
+    "App.tsx", 
+    "types.ts",
+    "gameData.ts",
+    "gameData/**/*.ts",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "components/Game/effects/**/*.ts",
+    "components/Game/vfx/**/*.ts",
+    "components/ModalManager.tsx",
+    "lib/**/*.ts",
+    "hooks/**/*.ts",
+    "vite.config.ts"
+    ],
+  "exclude": ["node_modules", "dist"]
+}
