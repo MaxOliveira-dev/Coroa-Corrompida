@@ -72,6 +72,7 @@ const CombatReportModal: React.FC<CombatReportModalProps> = ({ report, onClose, 
         <>
             <SimpleTooltip text={simpleTooltipText} visible={simpleTooltipVisible} position={simpleTooltipPosition} />
             <div 
+                id="combat-report-container"
                 className="fixed inset-0 bg-modal-overlay-bg flex justify-center items-center z-50 p-4 font-fredoka"
                 onClick={onClose} 
                 role="dialog"
@@ -85,6 +86,7 @@ const CombatReportModal: React.FC<CombatReportModalProps> = ({ report, onClose, 
                     <div className="flex justify-between items-center mb-2">
                         <h2 id="combat-report-title" className="text-2xl text-brand-accent font-semibold">Relatório de Combate</h2>
                         <button 
+                            id="combat-report-close-button-x"
                             onClick={onClose} 
                             className="text-text-muted hover:text-text-light text-3xl font-bold"
                             aria-label="Fechar relatório"
@@ -161,6 +163,7 @@ const CombatReportModal: React.FC<CombatReportModalProps> = ({ report, onClose, 
 
                     <div className="button-group flex justify-end gap-3 pt-3 border-t border-slot-border">
                         <button
+                            id="combat-report-close-button"
                             onClick={onClose}
                             className="text-md py-2 px-6 rounded-lg border-2 border-border-game cursor-pointer shadow-button-default active:translate-y-0.5 active:shadow-button-active transition-all duration-100 ease-in-out bg-accent hover:bg-accent-hover text-accent-text"
                         >

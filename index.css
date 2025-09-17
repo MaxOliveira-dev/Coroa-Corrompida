@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Fredoka', sans-serif;
+    background-color: #302B4B; /* brand-background */
+    color: #E0DDEF; /* text-light */
+    min-height: 100vh; /* Ensure full height */
+    /* Removed flex justify-center items-center from body for more control in App/MainMenu */
+}
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px; /* Slimmer scrollbar for vertical */
+    height: 8px; /* Slimmer scrollbar for horizontal */
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #302B4B; /* brand-background */
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #5A5482; /* border-game or a similar mid-tone purple */
+    border-radius: 4px;
+    border: 2px solid #302B4B; /* brand-background */
+}
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #5A5482 #302B4B; /* thumb track */
+}

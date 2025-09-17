@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Modal } from './Modal/Modal';
 import PurchaseLootModal from './Modal/PurchaseLootModal';
@@ -9,7 +10,7 @@ import DefeatScreen from './Game/DefeatScreen';
 import { useGameFlow } from '../hooks/useGameFlow';
 import { usePlayerActions } from '../hooks/usePlayerActions';
 
-import type { ModalType, ModalPropsMap, PlayerData, PlayerFragments } from '../types';
+import type { ModalType, ModalPropsMap, PlayerData, PlayerFragments, TutorialProgress } from '../types';
 import { DROPPABLE_WEAPONS, CLASSES as ALL_CLASSES } from '../gameData';
 
 interface ModalManagerProps {
@@ -23,6 +24,10 @@ interface ModalManagerProps {
   returnToColiseum: () => void; // Added this prop
   startNextLevel: (biomeKey: string) => void;
   openModal: <T extends ModalType>(type: T, props: ModalPropsMap[T]) => void;
+  // Tutorial Props
+  activeTutorialStep: keyof TutorialProgress | null;
+  tutorialSubStep: number;
+  advanceTutorialSubStep: () => void;
 }
 
 const ModalManager: React.FC<ModalManagerProps> = ({
@@ -34,6 +39,9 @@ const ModalManager: React.FC<ModalManagerProps> = ({
   returnToColiseum, // Receive the new function
   startNextLevel,
   openModal,
+  activeTutorialStep,
+  tutorialSubStep,
+  advanceTutorialSubStep,
 }) => {
   // FIX: Removed deprecated `setAppMessage` and `setPendingPurchaseLoot` props and passed the required `openModal` prop.
   const { handleClaimPurchaseLoot: originalHandleClaim } = usePlayerActions({
@@ -77,18 +85,32 @@ const ModalManager: React.FC<ModalManagerProps> = ({
             />
         );
 
-    case 'COMBAT_REPORT':
+    case 'COMBAT_REPORT': {
+        const combatReportProps = modal.props as ModalPropsMap['COMBAT_REPORT'];
+        const handleClose = () => {
+            // This is the correct place to handle tutorial advancement,
+            // as it has the current, not stale, tutorialSubStep.
+            if (activeTutorialStep === 'saw_post_battle_loot' && tutorialSubStep === 3) {
+                advanceTutorialSubStep();
+            }
+            // The onBack prop now simply handles navigation back to the previous modal.
+            combatReportProps.onBack();
+        };
+
         return (
             <CombatReportModal
-                report={modal.props.report}
-                onClose={modal.props.onBack}
+                report={combatReportProps.report}
+                onClose={handleClose}
                 heroesData={ALL_CLASSES}
             />
         );
+    }
     
     case 'POST_BATTLE_LOOT': {
+        const postBattleLootProps = modal.props as ModalPropsMap['POST_BATTLE_LOOT'];
+
         const handleProceed = () => {
-            const currentBiomeKey = modal.props.biomeKey;
+            const currentBiomeKey = postBattleLootProps.biomeKey;
             startNextLevel(currentBiomeKey);
             closeModal();
         };
@@ -97,14 +119,19 @@ const ModalManager: React.FC<ModalManagerProps> = ({
             closeModal();
         }
         const handleShowReport = () => {
+            if (activeTutorialStep === 'saw_post_battle_loot' && tutorialSubStep === 2) {
+              advanceTutorialSubStep();
+            }
             openModal('COMBAT_REPORT', { 
-                report: modal.props.report,
-                onBack: () => openModal('POST_BATTLE_LOOT', modal.props) 
+                report: postBattleLootProps.report,
+                // The onBack callback is now simplified. It only handles re-opening the loot modal.
+                // The tutorial advancement logic has been moved to the 'COMBAT_REPORT' case.
+                onBack: () => openModal('POST_BATTLE_LOOT', postBattleLootProps)
             });
         };
         return (
             <PostBattleLootModal
-                loot={modal.props.loot}
+                loot={postBattleLootProps.loot}
                 onClose={handleProceed}
                 onReturnToMenuClick={handleReturn}
                 onShowReportClick={handleShowReport}
